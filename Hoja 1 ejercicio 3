@@ -1,0 +1,104 @@
+#include<iostream>
+#include<math.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<windows.h>
+#include<time.h>
+using namespace std;
+int perso_encues;
+int aprobacion;
+string letras[] = { "A","C","L","P" };
+int dpta;
+int  arequipa, cajamarca, lima, puno;
+int suma;
+int aprobacion1, aprobacion2, aprobacion3, aprobacion4, aprobacion5;
+int edad[100];
+int  aux;
+int j;
+void personas_encuestadas() {//Ingrese el número de personas encuestadas (N). Este valor no debe ser mayor a 100.
+    do { 
+    cout << "Ingrese el numero de encuestados: "; cin >> perso_encues; 
+    } while (perso_encues > 100);
+    cout << endl;
+}
+void datos_encuestados() { //Genere aleatoriamente los datos de cada uno de los encuestados, es decir el nivel de
+                           //aprobación(entre 1 y 5), su edad(mayor a 17) y departamento en donde vive el encuestado
+                           // (A: Arequipa; C: Cajamarca; L: Lima; P: Puno).
+    srand(time(NULL));
+    for (int i = 1; i <= perso_encues; i++)//random aprobacion 1-5 , random edad 17 para arriba y lugar de residencia 
+    {
+ 
+        for (i = 0; i < perso_encues; i++)
+        {
+            
+            edad[i] = (rand() % 83) + 17;
+            
+        }
+        for (i = 0; i < perso_encues; i++) {
+            for (j = i + 1; j < perso_encues; j++) {
+                if (edad[i] < edad[j]) {
+                    aux = edad[i];
+                    edad[i] = edad[j];
+                    edad[j] = aux;
+                }
+            }
+        }
+        for (i = 0; i < perso_encues; i++)
+        {
+            aprobacion = 1 + rand() % 5;
+            dpta = rand() % 4;
+            cout << endl;
+            cout << "Su edad es de " << edad[i] << ", su aprobacion es de " << aprobacion << " y vive en " << letras[dpta] << endl;
+            if (dpta == 0)  //0-arequipa 1-cajamarca 2-lima 3-Puno
+            {
+                arequipa++;
+            }
+            if (dpta == 3) //0-arequipa 1-cajamarca 2-lima 3-Puno
+            {
+                puno++;
+            }
+            if (aprobacion == 1)
+            {
+                aprobacion1++;
+            }
+            if (aprobacion == 2)
+            {
+                aprobacion2++;
+            }
+            if (aprobacion == 3)
+            {
+                aprobacion3++;
+            }
+            if (aprobacion == 4)
+            {
+                aprobacion4++;
+            }
+            if (aprobacion == 5)
+            {
+                aprobacion5++;
+            }
+        }
+    
+    }
+}
+void personas_de_caja_puno() {
+
+    suma = arequipa + puno;
+    cout << "\nArequipa: " << arequipa;
+    cout << "\nPuno: " << puno;
+}
+void nivel_aprobacion() {
+    cout << "\nEl numero de personas que aprueban con un 1:" << aprobacion1;
+    cout << "\nEl numero de personas que aprueban con un 2:" << aprobacion2;
+    cout << "\nEl numero de personas que aprueban con un 3:" << aprobacion3;
+    cout << "\nEl numero de personas que aprueban con un 4:" << aprobacion4;
+    cout << "\nEl numero de personas que aprueban con un 5:" << aprobacion5;
+}
+int main() {
+    personas_encuestadas();
+    datos_encuestados();
+    nivel_aprobacion();
+    personas_de_caja_puno();
+    cout << endl;
+}
