@@ -1,0 +1,215 @@
+#include <iostream>
+using namespace std;
+
+int aleatorio_selectivo(int lim_inferior, int lim_superior) {
+    int num;
+    do {
+        num = lim_inferior + rand() % (lim_superior + 1 - lim_inferior);
+        if (num == 0 || num == 2 || num == 5) break;
+    } while (true);
+
+    return num;
+}
+
+int aleatorio_entre(int lim_inferior, int lim_superior) {
+    int num;
+
+    num = lim_inferior + rand() % (lim_superior + 1 - lim_inferior);
+    return num;
+}
+
+void generar_mensaje(int* arreglo, int n) {
+    for (int i = 0; i < n; i++) {
+        arreglo[i] = aleatorio_selectivo(0, 5);
+    }
+}
+
+void imprimir_mensaje(int* arreglo, int n) {
+    for (int i = 0; i < n; i++) {
+        cout << arreglo[i] << "  ";
+    }
+    cout << endl;
+}
+
+int* validar_mensaje_multiple(int* arreglo, int n) {
+    int flag = 0;
+    int* arrEstado = new int[5];
+
+    // Si se encuentra 202 al inicio del mensaje significa que las personas tienen frio
+    if (arreglo[0] == 2 && arreglo[1] == 0 && arreglo[2] == 2) {
+        arrEstado[0] = 1;
+        flag = 1;
+    }
+
+
+    //Si se encuentra 252 en forma alternada significa que las personas tienen calor 
+    for (int i = 0; i < n; i++) {
+        if (i + 4 < n) {
+            if (arreglo[i] == 2 && arreglo[i + 2] == 5 && arreglo[i + 4] == 2)
+            {
+                arrEstado[1] = 2;
+                flag = 1;
+            }
+
+        }
+    }
+
+    //Si se encuentra 502 al final del mensaje significa que las personas tienen hambre
+    // n-1 es la ultima casilla = 2
+    // n-2 es la penultima = 0
+    // n-3 es la ante penultima = 5
+
+    if (arreglo[n - 3] == 5 && arreglo[n - 2] == 0 && arreglo[n - 1] == 2)
+    {
+        arrEstado[2] = 3;
+        flag = 1;
+    }
+
+    // Si se encuentra 3 veces consecutivas el número CERO significa que están en peligro
+    for (int i = 0; i < n - 2; i++) {
+        if (arreglo[i] == 0 && arreglo[i + 1] == 0 && arreglo[i + 2] == 0)
+        {
+            arrEstado[3] = 4;
+            flag = 1;
+        }
+    }
+
+    if (flag == 0) // no encontro ningun mensaje
+        arrEstado[4] = 99;
+
+    return arrEstado;
+
+}
+
+int validar_mensaje(int* arreglo, int n) {
+    int estado = 0;
+
+    // Si se encuentra 202 al inicio del mensaje significa que las personas tienen frio
+    if (arreglo[0] == 2 && arreglo[1] == 0 && arreglo[2] == 2)
+        estado = 1;
+
+    //Si se encuentra 252 en forma alternada significa que las personas tienen calor 
+    for (int i = 0; i < n; i++) {
+        if (i + 4 < n) {
+            if (arreglo[i] == 2 && arreglo[i + 2] == 5 && arreglo[i + 4] == 2)
+                estado = 2;
+        }
+    }
+
+    //Si se encuentra 502 al final del mensaje significa que las personas tienen hambre
+    // n-1 es la ultima casilla = 2
+    // n-2 es la penultima = 0
+    // n-3 es la ante penultima = 5
+
+    if (arreglo[n - 3] == 5 && arreglo[n - 2] == 0 && arreglo[n - 1] == 2)
+        estado = 3;
+
+    // Si se encuentra 3 veces consecutivas el número CERO significa que están en peligro
+    for (int i = 0; i < n - 2; i++) {
+        if (arreglo[i] == 0 && arreglo[i + 1] == 0 && arreglo[i + 2] == 0)
+            estado = 4;
+    }
+
+    return estado;
+
+}
+
+int main()
+{
+    srand(time(NULL));
+    int n, estado_mensaje;
+    int* arrMensaje;
+    int* arr_EstadoMensaje;
+    char tecla = ' ';
+    int contFrio, contHambre, contCalor, contPeligro, contNada, cont_Mensajes;
+    contFrio = 0;
+    contCalor = 0;
+    contPeligro = 0;
+    contHambre = 0;
+    contNada = 0;
+    cont_Mensajes = 0;
+
+    n = aleatorio_entre(10, 20);
+    //creamos un arreglo unidemesional
+    arrMensaje = new int[n];
+
+    do {
+
+        generar_mensaje(arrMensaje, n);
+        imprimir_mensaje(arrMensaje, n);
+        estado_mensaje = validar_mensaje(arrMensaje, n);
+        arr_EstadoMensaje = validar_mensaje_multiple(arrMensaje, n);
+
+        cont_Mensajes++;
+
+        cout << "Mensaje #: " << cont_Mensajes << endl;
+
+        for (int i = 0; i < 5; i++) {
+            switch (arr_EstadoMensaje[i]) {
+            case 1:
+                contFrio++;
+                cout << "Las personas tienen frio" << endl;
+                break;
+            case 2:
+                contCalor++;
+                cout << "Las personas tienen calor" << endl;
+                break;
+            case 3:
+                contHambre++;
+                cout << "Las personas tienen hambre" << endl;
+                break;
+            case 4:
+                contPeligro++;
+                cout << "Las personas estan en PELIGRO" << endl;
+                break;
+            case 99:
+                contNada++;
+                cout << "NINGUN CODIGO RECIBIDO" << endl;
+                break;
+
+            }
+
+        }
+
+
+
+        /* cuando se utiliza la funcion: validar mensaje
+        switch (estado_mensaje) {
+            case 1:
+                contFrio++;
+                cout << "Las personas tienen frio" << endl;
+                break;
+            case 2:
+                contCalor++;
+                cout << "Las personas tienen calor" << endl;
+                break;
+            case 3:
+                contHambre++;
+                cout << "Las personas tienen hambre" << endl;
+                break;
+            case 4:
+                contPeligro++;
+                cout << "Las personas estan en PELIGRO" << endl;
+                break;
+            default:
+                contNada++;
+                cout << "NINGUN CODIGO RECIBIDO" << endl;
+                break;
+
+        }
+        */
+        cout << "Presione cualquier tecla para continuar, caso contrario digite T para terminar: ";
+        cin >> tecla;
+
+        if (tecla == 'T' || tecla == 't') break;
+
+    } while (true);
+
+    // Visualizar los resulatados
+    cout << "Cantidad de mensajes recibidos: " << cont_Mensajes << endl;
+    cout << "Veces que se solicito abrigo: " << contFrio << endl;
+    cout << "Veces que se solicito agua: " << contCalor << endl;
+    cout << "Veces que se solicito alimento: " << contHambre << endl;
+    cout << "Veces que estan en PELIGRO: " << contPeligro << endl;
+    cout << "Veces que no se recibio un CODIGO: " << contNada << endl;
+}
