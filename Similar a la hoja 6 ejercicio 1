@@ -1,0 +1,148 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int aleatorio_entre(int lim_inferior, int lim_superior) {
+    int num;
+
+    num = lim_inferior + rand() % (lim_superior + 1 - lim_inferior);
+    return num;
+
+}
+struct Salidas {
+    int hora; // consecutiva a partir de las 5h en adelante
+    int cant; // aleatorio entre 5 - 10
+};
+
+void genera_arreglo(Salidas* arreglo, int n) {
+    for (int i = 0; i < n; i++) {
+        arreglo[i].hora = 5 + i;
+        arreglo[i].cant = aleatorio_entre(5, 40);
+    }
+}
+
+void imprime_arreglo(Salidas* arreglo, int n) {
+    cout << "Hora      ";
+    for (int i = 0; i < n; i++) {
+        cout << setw(4) << arreglo[i].hora;
+    }
+    cout << endl;
+    cout << "Cantidad  ";
+    for (int i = 0; i < n; i++) {
+        cout << setw(4) << arreglo[i].cant;
+    }
+    cout << endl << endl;
+
+}
+
+int menor(Salidas* arreglo, int n) {
+    int menor = arreglo[0].cant;
+    for (int i = 0; i < n; i++) {
+        if (arreglo[i].cant < menor) {
+            menor = arreglo[i].cant;
+        }
+    }
+    return menor;
+}
+
+
+void hora_menor_salidas(Salidas* arreglo, int n) {
+    int min = menor(arreglo, n); // menor valor almacenado en el arreglo de estructura en la var cant
+
+    cout << "Minima cantidad de salidas de buses: " << min << endl;
+    for (int i = 0; i < n; i++) {
+        if (arreglo[i].cant == min) {
+            cout << "Hora de salida: " << arreglo[i].hora << "h" << endl;
+        }
+    }
+}
+
+void promedio_de_salidas(Salidas* arreglo, int n) {
+    float prom;
+    int acumCant, cont;
+
+    acumCant = 0;
+    cont = 0;
+
+    for (int i = 0; i < n; i++) {
+        // considerar solo el horario de la mañana
+        if (arreglo[i].hora >= 5 && arreglo[i].hora <= 12) {
+            cont++;
+            acumCant += arreglo[i].cant;
+        }
+    }
+
+    prom = acumCant / (cont * 1.0);
+
+    cout << "El promedio de salidas de buses durante la mañana es: " << prom << endl << endl;
+}
+
+
+void ordena_arreglo(Salidas*& arreglo, int n) { // cantidad de mayor a menor
+
+    Salidas aux;
+    int hora_aux;
+    int flag = 0;
+
+    //Primero ordenamos por cantidad de salidas de forma descendente (mayor a menor)
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (arreglo[i].cant < arreglo[j].cant) {
+                aux = arreglo[i];
+                arreglo[i] = arreglo[j];
+                arreglo[j] = aux;
+            }
+        }
+    }
+
+    cout << "Cantidad de Salidas de buses (descendente)" << endl;
+    imprime_arreglo(arreglo, n);
+    //Ahora ordenamos por hora (ascendente) de menor a mayor (solo cuando se repiten las cantidades de salidas en la estructura)
+    for (int i = 0; i < n; i++) {
+        if (i < n - 1)
+            if (arreglo[i].cant == arreglo[i + 1].cant)  //son iguales cantidades de salidas
+                if (arreglo[i].hora > arreglo[i + 1].hora) // y la hora del primero es mayor que la hora del segundo
+                {
+                    //cout << "Hora: " << arreglo[i].hora << " Cantidad: " << arreglo[i].cant << endl;
+                    //cout << "Hora2: " << arreglo[i + 1].hora << " Cantidad2: " << arreglo[i + 1].cant << endl;
+                    // Cambiamos la hora en el arreglo de estructura
+                    hora_aux = arreglo[i].hora;
+                    arreglo[i].hora = arreglo[i + 1].hora;
+                    arreglo[i + 1].hora = hora_aux;
+                    //solo si hay valores de cantidad de salidas repetidas visualizaremos nuevamente el arreglo de estructura ordenado por horas ascendente
+                    flag = 1;
+                }
+    }
+
+    if (flag > 0) {
+        cout << "Cantidad de Salidas de buses (descendente) y en horas (ascendente)" << endl;
+        imprime_arreglo(arreglo, n);
+    }
+
+}
+int main()
+{
+    srand(time(NULL));
+    int rangoHora = aleatorio_entre(10, 19);
+
+    //Arreglo de la estructura Salidas
+    Salidas* arrSalidas = new Salidas[rangoHora];
+
+    //Cargar el arreglo de 
+
+    cout << "(1) Genera e imprime Arreglo de Estructura: Salidas de buses" << endl;
+    genera_arreglo(arrSalidas, rangoHora);
+    imprime_arreglo(arrSalidas, rangoHora);
+
+    cout << "(2) Horas en las que salen menos buses" << endl;
+    hora_menor_salidas(arrSalidas, rangoHora);
+
+    cout << "(3) Promedio de salidas de buses en la mañana (de 5am-12pm)" << endl;
+    promedio_de_salidas(arrSalidas, rangoHora);
+
+    cout << "(4) Ordenamiento de la estructura Salidas: Cantidad (descendente) y Hora (ascendente)" << endl;
+    ordena_arreglo(arrSalidas, rangoHora);
+
+    delete[]arrSalidas;
+    return 0;
+}
