@@ -1,0 +1,79 @@
+#include<iostream>
+#include<math.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<windows.h>
+#include<time.h>
+
+using namespace std;
+
+int main() {
+    int i, j, opt = 0;
+    const int col = 10;
+    const int row = 15;
+    string letras[] = { "R","N","B" };
+    int rojas=0;
+    int x;
+    int negras = 0;
+    int blancas = 0;
+    cout << "El numero de columas es de 15 ";
+    cout << "\n\n";
+    cout << "El numero de filas es de 10 ";
+    cout << "\n\n";
+    srand(time(NULL));
+    char arr[row][col];
+    for (i = 0; i < row; i++)
+    {
+        for (j = 0; j < col; j++)
+        {
+            x = rand() % 3;
+            cout << "\t" << letras[x];
+            if (x == 2)//blancas
+            {
+                blancas++;
+            }
+            if (x == 1)//negras
+            {
+                negras++;
+            }
+            if (x == 0)//rojo
+            {
+                rojas++;
+            }
+        }
+        cout << "\n\n";
+    }
+    cout << "\nLa cantidad d rojas es de :" << rojas;
+    cout << "\nLa cantidad d negras es de :" << negras;
+    cout << "\nLa cantidad d blancas es de :" << blancas;
+    cout << endl;
+    if (blancas > negras && blancas > rojas)
+    {
+        cout << "\nLa quinua blanca es la que tiene mas frecuencia de aparicion";
+    }
+    if (negras > rojas && negras > blancas)
+    {
+        cout << "\nLa quinua negra es la que tiene mas frecuencia de aparicion";
+    }
+    if (rojas > blancas && rojas > negras)
+    {
+        cout << "\nLa quinua roja es la que tiene mas frecuencia de aparicion";
+    }
+
+    //
+    cout << endl;
+    if (rojas<blancas && rojas<negras)
+    {
+        cout << "\nLa quinua roja es la que tiene menor frecuencia de aparicion";
+    }
+    if (blancas<negras && blancas< rojas )
+    {
+        cout << "\nLa quinua blanca es la que tiene menor frecuencia de aparicion";
+    }
+    if (negras<rojas &&  negras<blancas )
+    {
+        cout << "\nLa quinua negra es la que tiene menor frecuencia de aparicion";
+    }
+    cout << endl;
+}
